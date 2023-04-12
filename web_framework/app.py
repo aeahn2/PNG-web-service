@@ -12,11 +12,10 @@ def index():
   return render_template("index.html")
 
 
-# Extract a hidden "uiuc" GIF from a PNG image:
+# Extract a hidden file from the 'file' chunk in PNG image:
 @app.route('/extract', methods=["POST"])
-def extract_hidden_gif():
-  print("In extract_hidden_gif()")
-  # Create 'temp' directory to hold PNG/GIFs 
+def extract_hidden_file():
+  # Create 'temp' directory to cache PNG/Files 
   try:
     os.makedirs("temp")
   except FileExistsError:
@@ -28,16 +27,16 @@ def extract_hidden_gif():
   png_filepath = f"temp/{png_filename}"
   png_input.save(png_filepath)
   
-  # Extract GIF using MP2 
+  # Extract file using png_microservice 
   global image_counter
-  gif_filepath = f"temp/{image_counter}.gif"
+  extract_filepath = f"temp/{image_counter}"
   image_counter += 1
   os.system("make")
-  exit_status = os.system(f"./png-extractGIF {png_filepath} {gif_filepath}")
+  exit_status = os.system(f"./png-extract {png_filepath} {extract_filepath}")
 
-  if exit_status == 0: #successfully extracted GIF
+  if exit_status == 0: #successfully extracted file
     os.remove(png_filepath)
-    return send_file(gif_filepath), 200
+    return send_file(extract_filepath), 200
 
   if exit_status == 512: #invalid PNG
     os.remove(png_filepath)
@@ -45,20 +44,20 @@ def extract_hidden_gif():
     response = make_response("Error: invalid PNG", 422)
     return response
 
-  if exit_status == 1024: #valid PNG but missing 'uiuc' chunk
+  if exit_status == 1024: #valid PNG but missing 'file' chunk
     os.remove(png_filepath)
-    os.remove(gif_filepath)
+    os.remove(extract_filepath)
     image_counter -= 1
-    response = make_response("Error: no hidden GIF image to extract", 415)
+    response = make_response("Error: no hidden file to extract", 415)
     return response
 
 
-# Get the nth saved "uiuc" GIF:
+# Get the nth saved extracted file from 'temp/' cache:
 @app.route('/extract/<int:image_num>', methods=['GET'])
 def extract_image(image_num):
   global image_counter
   if image_num >= image_counter:
     response = make_response(f"Error: Image #{image_num} not found", 404)
     return response
-  image_filepath = f"temp/{image_num}.gif"
+  image_filepath = f"temp/{image_num}"
   return send_file(image_filepath), 200

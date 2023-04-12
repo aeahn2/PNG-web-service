@@ -1,8 +1,9 @@
 venv/*
 temp/*
 temp
-png-extractGIF
+png-extract
 *.dSYM/*
 *.DS_Store
 **/__pycache__
 **/.pytest_cache
+./github*

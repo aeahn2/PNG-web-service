@@ -8,10 +8,10 @@ endif
 
 LIBS = $(MICROSERVICE_DIR)lib/crc32.c $(MICROSERVICE_DIR)lib/png.c
 
-all: png-extractGIF
+all: png-extract
 
-png-extractGIF: $(MICROSERVICE_DIR)png-extractGIF.c $(MICROSERVICE_DIR)png-extractGIF-main.c $(LIBS)
+png-extractGIF: $(MICROSERVICE_DIR)png-extract.c $(MICROSERVICE_DIR)png-extract-main.c $(LIBS)
 	$(CC) $^ $(FLAGS) -o $@
 
 clean:
-	rm -rf *.dSYM/ png-extractGIF
+	rm -rf *.dSYM/ png-extract
