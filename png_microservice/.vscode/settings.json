@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "crc32.h": "c",
+        "array": "c",
+        "vector": "c",
+        "png-hidegif.h": "c"
+    }
+}
